@@ -1,14 +1,26 @@
-Project proposal
+Tidy Courses Proposal
 ================
-Team name
+Nils and Juliana
 
 ``` r
 library(tidyverse)
 library(broom)
 ```
 
-## 1\. Introduction
+## 1. Introduction
 
-## 2\. Data
+introduce your general research question and your data (where it came
+from, how it was collected, what are the cases, what are the variables,
+etc.).
 
-## 3\. Data analysis plan
+## 2. Data
+
+- [ ] Is the data in the /data folder?
+- [ ] Does the README include the dimensions and codebook for the data
+  set?
+- [ ] Does the proposal include the output of glimpse() or skim() of the
+  data frame.
+
+## 3. Ethics review
+
+## 4. Data analysis plan
