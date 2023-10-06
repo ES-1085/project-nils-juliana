@@ -9,6 +9,11 @@ library(tidyverse)
 library(broom)
 ```
 
+```{r}
+view()
+```
+
+
 ## 1. Introduction
 introduce your general research question and your data (where it came from, how it was collected, what are the cases, what are the variables, etc.).
 
