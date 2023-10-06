@@ -10,7 +10,7 @@ library(broom)
 ```
 
 ```{r}
-view()
+view(coa_courses)
 ```
 
 
