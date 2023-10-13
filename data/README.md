@@ -6,6 +6,9 @@ Then, include codebooks (variables, and their descriptions) for your data file(s
 using the following format.
 
 ## coa_courses
+This dataset contains 1327, 14 variables. 
+
+Observations are courses offered in an academic year. Each observation has 14 variables: Department, Course Number, Course Division, Course Name, Instructor, Course Description, Active Flag, Semester, Year, Term, Level, Prerequisites, Class Size, and Degree Requirements
 
 - `Department`: Indicates the department associated with the course, Art and Design(AD), Environmental Science(ES), Human Studies(HS)
 - `Course Number`: Course number associated with course, each course has a unique value. Course Number indicates the course level, introductary - intermediate -advanced  
