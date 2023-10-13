@@ -9,26 +9,81 @@ library(tidyverse)
 library(broom)
 ```
 
+
+```{r, echo = FALSE, message = FALSE}
+ # install.packages("readxl")
+ # install.packages("tidyverse")
+ # install.packages("stringr")
+ # install.packages("tidytext")
+ # install.packages("stopwords")
+ # install.packages("tidylo")
+ # install.packages("widyr")
+ # install.packages("ggraph")
+ # install.packages("tidygraph")
+
+
+library(readxl)
+library(tidyverse)
+library(stringr)
+library(tidytext)
+library(stopwords)
+library(tidylo)
+
+# Network analysis libraries
+library(widyr)
+library(ggraph)
+library(tidygraph)
+```
+
 ```{r}
+coa_courses <- read_excel("data/coa-courses.xlsx")
+
 view(coa_courses)
 ```
 
+```{r import-data-add-variables}
+
+
+coa_courses <- coa_courses %>%
+  mutate(Year = str_c(20, str_extract(Semester, "\\d{2}")),
+         Term = str_sub(Semester, start = 4, end = 4),
+         Level = str_extract(CourseDescription, pattern = "Level: Intermediate|Level: Introductory|Level: Advanced"),
+         Prerequisites = str_extract(CourseDescription, pattern = "Prerequisites[^.]+"),
+         Class_Size = str_extract(CourseDescription, pattern = "Class limit[^.]+"),
+         Class_Size = str_extract(CourseDescription, pattern = "Class limit[^.]+"), # Try adapting for course fee
+         Degree_Requirements = str_extract(CourseDescription, pattern = "Meets the following degree requirements[^.]+"))
+
+```
 
 ## 1. Introduction
-introduce your general research question and your data (where it came from, how it was collected, what are the cases, what are the variables, etc.).
+
+Every term during the registration period, the COA community navigates the system of academic courses categorized by resource area (department), course level, and the fulfillment of graduation requirements. These categories, which shape decisions on the system offering every term, are not as logical or functional as they could be. This situation has sparked a variety of interrelated research questions for this project as follows:
+
+- How are COA course offerings distributed across resource areas?
+- How well are COA course offerings meeting students' graduation requirement needs? 
+- How many professors are there? Are they full-time faculty or else? 
+- How many courses are professors and instructors teaching, and do those courses meet degree requirements? 
+- How are professors and other kinds of instructors distributed among resource areas? 
+
+The dataset we will use for this project was collected from the Registrar records from the Winter of 2018 to the Spring of 2023. This dataset contains 1327 observations or courses offered in an academic year. Each observation has 14 variables: Department, Course Number, Course Division, Course Name, Instructor, Course Description, Active Flag, Semester, Year, Term, Level, Prerequisites, Class Size, and Degree Requirements 
 
 
 ## 2. Data
-- [ ] Is the data in the /data folder?
-- [ ] Does the README include the dimensions and codebook for the data set?
-- [ ] Does the proposal include the output of glimpse() or skim() of the data frame.
-
-
+- [Yes] Is the data in the /data folder?
+- [Yes] Does the README include the dimensions and codebook for the data set?
+- [Yes] Does the proposal include the output of glimpse() or skim() of the data frame.
 
 ## 3. Ethics review
 
+N/A
 
 ## 4. Data analysis plan
 
+We will create a visualization showing course distribution in their respective resource areas. Additionally, have this show the class sizes and amount of students.
 
+- Visualize classes within each resource areas that meet graduation requirement and portion that do not.
+- Visualize a portion of classes taught by the different teacher groupings. Relate this to the amount of student spaces/enrollments.
+- We will visualize classes that meet the graduation requirements.
+
+We might possibly extend or reorganize the current dataset in groupings that include the status of each instructor, visiting faculty, faculty, lecturer, teaching staff and so on. This information will be provided by Krystal, the Registrar, and Lothar, Academic Services Administrator. 
 

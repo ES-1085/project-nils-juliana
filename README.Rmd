@@ -24,7 +24,6 @@ glimpse(coa_courses)
 ```
 
 
-
 ## Presentation
 
 Our presentation can be found [here](presentation/presentation.html).
