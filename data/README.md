@@ -13,6 +13,6 @@ using the following format.
 - `Course Name`: Name of courses offered
 - `Instructor`: Name of instructor
 - `Course Description`: Shows the instructors descriptions of the course.
-- `Active Flag`: Shows if the class is still offered and active (true) and if not (false)
-- `Semester`: Indicates the year and term that class was offered. 
+- `Active Flag`: Shows the class offered and active (true) and if outdated as (false)
+- `Semester`: Indicates the year and term that class was offered. The number is the year and the letters q, b, c, represents fall, winter, spring respectively.
 - ...
