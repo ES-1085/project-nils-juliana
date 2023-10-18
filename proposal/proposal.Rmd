@@ -41,6 +41,10 @@ coa_courses <- read_excel("data/coa-courses.xlsx")
 view(coa_courses)
 ```
 
+```{r load-data, echo = FALSE}
+glimpse(coa_courses)
+```
+
 ```{r import-data-add-variables}
 
 
