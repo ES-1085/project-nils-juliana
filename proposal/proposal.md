@@ -47,14 +47,18 @@ the system of academic courses categorized by resource area
 requirements. These categories, which shape decisions on the system
 offering every term, are not as logical or functional as they could be.
 This situation has sparked a variety of interrelated research questions
-for this project as follows:
+for this project. Our team will focus on the following questions:
 
 - How are COA course offerings distributed across resource areas?
 - How well are COA course offerings meeting students’ graduation
   requirement needs?
-- How many professors are there? Are they full-time faculty or else?
 - How many courses are professors and instructors teaching, and do those
   courses meet degree requirements?
+
+If we receive more data from Lothar and time permits it, we would like
+to explore the following questions as well:
+
+- How many professors are there? Are they full-time faculty or else?
 - How are professors and other kinds of instructors distributed among
   resource areas?
 
@@ -81,14 +85,10 @@ N/A
 ## 4. Data analysis plan
 
 We will create a visualization showing course distribution in their
-respective resource areas. Additionally, have this show the class sizes
-and amount of students.
-
-- Visualize classes within each resource areas that meet graduation
-  requirement and portion that do not.
-- Visualize a portion of classes taught by the different teacher
-  groupings. Relate this to the amount of student spaces/enrollments.
-- We will visualize classes that meet the graduation requirements.
+respective resource areas throughout the years/ terms. We will also
+create visualizations to show how many classes meet degree requirements
+per resource area. Additionally we will make note of how many professors
+are teaching classes that meet degree requirements per term.
 
 We might possibly extend or reorganize the current dataset in groupings
 that include the status of each instructor, visiting faculty, faculty,
