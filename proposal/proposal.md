@@ -83,7 +83,6 @@ instructors_distinct <- coa_courses2 %>% distinct(Instructor)
 write_csv(instructors_distinct, file = "data/instructors.csv")
 
 instructors <- instructors %>%
-<<<<<<< HEAD
   mutate(Status = case_when(Instructor %in% c("Anderson, John", 
                                               "Andrews, Nancy",
                                               "Baker, Jodi",
@@ -106,7 +105,7 @@ instructors <- instructors %>%
                                               "Hill, Kenneth",
                                               "Hudson, Reuben",
                                               "Kozak, Anne",
-                                             # "Lakey, Heather",
+                                             "Lakey, Heather",
                                               "Letcher, Susan",
                                               "Little-Siebold, Todd",
                                               "Mancinelli, Isabel",
@@ -125,7 +124,7 @@ instructors <- instructors %>%
                                                "van Vliet, Netta",
                                                 "Visvader, John",
                                                 "Waldron, Karen") ~ "Permanent Faculty",
-                          Instructor %in% c("Pena, Karla") & Year < 2023 ~ "Lecturer",
+                          Instructor %in% c("Pena, Karla") & Year > 2023 ~ "Lecturer",
                            Instructor %in% c("Lakey, Heather") & Year < 2021 ~ "Ajunct",
                             Instructor %in% c("Soares, Zachary") & Year >= 2022 ~ "Teaching Staff",
                             Instructor %in% c("Soares, Zachary") & Year < 2022 ~ "Adjunct",
@@ -147,15 +146,6 @@ instructors <- instructors %>%
                                               "Turok, Katharine",
                                               "Weber, Jill",
                                                "Winer, Joshua") ~ "Lecturer", TRUE ~ "Adjunct"))
-=======
-  mutate(Status = case_when(Instructor %in% c("Andrews, Nancy", 
-                                              "Colbert, Dru",
-                                              "Feldman, David",
-                                              "Hudson, Reuben",
-                                              "Tai, Bonnie") ~ "Permanent full-time",
-                            Instructor %in% c("Soares, Zachary") & Year >= 2022 ~ "Permanent Teaching Staff",
-                            TRUE ~ "Not permanent full-time"))
->>>>>>> f0f069b2b6865201c2b1c32ca5eacf30871582ba
 
 
 coa_courses2 <- coa_courses2 %>%
