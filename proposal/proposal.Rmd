@@ -46,6 +46,8 @@ view(coa_courses)
 glimpse(coa_courses)
 ```
 
+
+
 ```{r import-data-add-variables}
 
 

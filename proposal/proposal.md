@@ -83,6 +83,7 @@ instructors_distinct <- coa_courses2 %>% distinct(Instructor)
 write_csv(instructors_distinct, file = "data/instructors.csv")
 
 instructors <- instructors %>%
+<<<<<<< HEAD
   mutate(Status = case_when(Instructor %in% c("Anderson, John", 
                                               "Andrews, Nancy",
                                               "Baker, Jodi",
@@ -146,6 +147,15 @@ instructors <- instructors %>%
                                               "Turok, Katharine",
                                               "Weber, Jill",
                                                "Winer, Joshua") ~ "Lecturer", TRUE ~ "Adjunct"))
+=======
+  mutate(Status = case_when(Instructor %in% c("Andrews, Nancy", 
+                                              "Colbert, Dru",
+                                              "Feldman, David",
+                                              "Hudson, Reuben",
+                                              "Tai, Bonnie") ~ "Permanent full-time",
+                            Instructor %in% c("Soares, Zachary") & Year >= 2022 ~ "Permanent Teaching Staff",
+                            TRUE ~ "Not permanent full-time"))
+>>>>>>> f0f069b2b6865201c2b1c32ca5eacf30871582ba
 
 
 coa_courses2 <- coa_courses2 %>%
