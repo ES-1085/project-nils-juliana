@@ -9,7 +9,20 @@ library(broom)
 
 ``` r
 coa_courses <- read_excel("data/coa-courses.xlsx")
+coa_courses2 <- read_csv("data/coa_courses2.csv")
+```
 
+    ## Rows: 1327 Columns: 15
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (13): Department, CourseNumber, CourseDivision, CourseName, Instructor, ...
+    ## dbl  (1): Year
+    ## lgl  (1): ActiveFlag
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
 view(coa_courses)
 ```
 
@@ -34,9 +47,114 @@ coa_courses <- coa_courses %>%
          Term = str_sub(Semester, start = 4, end = 4),
          Level = str_extract(CourseDescription, pattern = "Level: Intermediate|Level: Introductory|Level: Advanced"),
          Prerequisites = str_extract(CourseDescription, pattern = "Prerequisites[^.]+"),
-         Class_Size = str_extract(CourseDescription, pattern = "Class limit[^.]+"),
-         Class_Size = str_extract(CourseDescription, pattern = "Class limit[^.]+"), # Try adapting for course fee
-         Degree_Requirements = str_extract(CourseDescription, pattern = "Meets the following degree requirements[^.]+"))
+         Lab_Fee_USD = str_extract(CourseDescription, pattern = "(?<=Lab fee\\: \\$)[^.]+"),
+         Class_Size = str_extract(CourseDescription, pattern = "(?<=Class limit\\: )[^.]+"), # Try adapting for course fee
+         Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*"))
+
+coa_courses3 <- coa_courses %>%
+   separate_rows(Degree_Requirements, sep = ", ") %>%
+   separate_rows(Degree_Requirements, sep = " ") %>%
+   separate_rows(Degree_Requirements, sep = ",")
+
+coa_courses3 %>%
+  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY")) %>%
+
+  group_by(Year, Degree_Requirements) %>%
+  summarize(number_courses_per_degree = n()) %>%
+  ggplot(aes(x = Year, y = number_courses_per_degree, color = Degree_Requirements)) +
+  geom_line(aes(group = Degree_Requirements))
+```
+
+    ## `summarise()` has grouped output by 'Year'. You can override using the
+    ## `.groups` argument.
+
+![](proposal_files/figure-gfm/import-data-add-variables-1.png)<!-- -->
+
+``` r
+write_csv(coa_courses, file = "data/coa_courses2.csv")
+```
+
+``` r
+instructors <- coa_courses2 %>% distinct(Instructor, Year)
+
+instructors_distinct <- coa_courses2 %>% distinct(Instructor)
+
+write_csv(instructors_distinct, file = "data/instructors.csv")
+
+instructors <- instructors %>%
+  mutate(Status = case_when(Instructor %in% c("Anderson, John", 
+                                              "Andrews, Nancy",
+                                              "Baker, Jodi",
+                                              "Baker, Laurie",
+                                              "Borden, Richard",
+                                              "Carpenter, William",
+                                              "Cline, Ken",
+                                              "Clinger, Catherine",
+                                              "Colbert, Dru",
+                                              "Collum, Kourtney",
+                                              "Cooper, John",
+                                              "Cox, Gray",
+                                              "Feldman, David",
+                                              "Foley, Sean",
+                                              "Friedlander, Jay",
+                                              "Gatti, Daniel",
+                                              "Hall, Sarah",
+                                              "Henderson, Jonathan",
+                                              "Hess, Helen",
+                                              "Hill, Kenneth",
+                                              "Hudson, Reuben",
+                                              "Kozak, Anne",
+                                             # "Lakey, Heather",
+                                              "Letcher, Susan",
+                                              "Little-Siebold, Todd",
+                                              "Mancinelli, Isabel",
+                                              "McKown, Jamie",
+                                              "Morse, Suzanne",
+                                              "Pena, Karla",
+                                               "Petersen Christopher",
+                                              "Ressel, Stephen",
+                                              "Schrade, Daniel Kojo",
+                                              "Stabinsky, Doreen",
+                                              "Tai, Bonnie",
+                                              "Taneja , Palak",
+                                              "Tardif, Twila",
+                                              "Taylor, Davis",
+                                              "Todd, Sean",
+                                               "van Vliet, Netta",
+                                                "Visvader, John",
+                                                "Waldron, Karen") ~ "Permanent Faculty",
+                          Instructor %in% c("Pena, Karla") & Year < 2023 ~ "Lecturer",
+                           Instructor %in% c("Lakey, Heather") & Year < 2021 ~ "Ajunct",
+                            Instructor %in% c("Soares, Zachary") & Year >= 2022 ~ "Teaching Staff",
+                            Instructor %in% c("Soares, Zachary") & Year < 2022 ~ "Adjunct",
+                            Instructor %in% c("Cass, Blake", 
+                                              "Fuller, Linda",
+                                              "Gibson, David",
+                                              "Teaching Staff",
+                                              "Longsworth, Gordon") ~ "Teaching Staff",
+                            Instructor %in% c("Beach, Desmond",
+                                              "Chien, Ming-Tso",
+                                              "Downing, E. Saffronia",
+                                              "Oblongata, Donna") ~ "Visitor",
+                           Instructor %in% c("Capers, Colin",
+                                             "Donovan, Martha",
+                                             "Levin, Robert",
+                                             "Mahoney, Daniel",
+                                              "Stover, Candice",
+                                              "Swann, Scott",
+                                              "Turok, Katharine",
+                                              "Weber, Jill",
+                                               "Winer, Joshua") ~ "Lecturer", TRUE ~ "Adjunct"))
+
+
+coa_courses2 <- coa_courses2 %>%
+  left_join(instructors, by = c("Instructor", "Year"))
+
+# An example of exploring a hypothetical what could count for resource area requirements
+#coa_courses2 <- coa_courses2 %>%
+  #mutate(course_counts = case_when(Status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
+        # TRUE ~ "Doesn't Count")
 ```
 
 ## 1. Introduction
