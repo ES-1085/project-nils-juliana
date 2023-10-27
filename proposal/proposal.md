@@ -170,15 +170,10 @@ for this project. Our team will focus on the following questions:
 - How are COA course offerings distributed across resource areas?
 - How well are COA course offerings meeting students’ graduation
   requirement needs?
-- How many courses are professors and instructors teaching, and do those
-  courses meet degree requirements?
-
-If we receive more data from Lothar and time permits it, we would like
-to explore the following questions as well:
-
-- How many professors are there? Are they full-time faculty or else?
-- How are professors and other kinds of instructors distributed among
-  resource areas?
+- How many courses are permanent and visiting faculty teaching,
+  proportionally?
+- What are the Lab fees in the different resource areas?
+- How are class size in relation to resource areas?
 
 The dataset we will use for this project was collected from the
 Registrar records from the Winter of 2018 to the Spring of 2023. This
@@ -186,7 +181,7 @@ dataset contains 1327 observations or courses offered in an academic
 year. Each observation has 14 variables: Department, Course Number,
 Course Division, Course Name, Instructor, Course Description, Active
 Flag, Semester, Year, Term, Level, Prerequisites, Class Size, and Degree
-Requirements
+Requirements, Lab fee and class size.
 
 ## 2. Data
 
