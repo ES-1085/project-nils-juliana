@@ -179,7 +179,7 @@ for this project. Our team will focus on the following questions:
 The dataset we will use for this project was collected from the
 Registrar records from the Winter of 2018 to the Spring of 2023. This
 dataset contains 1327 observations or courses offered in an academic
-year. Each observation has 14 variables: Department, Course Number,
+year. Each observation has 15 variables: Department, Course Number,
 Course Division, Course Name, Instructor, Course Description, Active
 Flag, Semester, Year, Term, Level, Prerequisites, Class Size, and Degree
 Requirements, Lab fee and class size.
