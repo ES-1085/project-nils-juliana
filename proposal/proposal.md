@@ -194,7 +194,24 @@ Requirements, Lab fee and class size.
 
 ## 3. Ethics review
 
-N/A
+On our coa_courses3 dataset, some variables (columns) have an N/A or
+blank space. These data shortcomings might limit the accuracy of our
+data visualizations and summaries. The variables missing data are Level,
+Prerequisites, Lab_fee_USD, Class_Size, and Degree_Requirements. Since
+students make up our team, we will continue verifying information and
+our interpretations of the data with Laurie, Krystal, Lothar, and Jamie
+McKown. Additionally, our team will aim to communicate any limitations
+on the visualizations and their accompanying texts when appropriate.
+
+Moreover, our team anticipates that the Academic Affairs Committee (AAC)
+and the COA community will benefit from our work in future
+decision-making. As our college evolves, various stakeholders need to
+figure out how to address the course-offering system’s shortcomings and
+strengths to best cater to the needs of the student body and the work
+capacity of our faculty. Our efforts will likely be the first step in an
+in-depth data analysis of trends and possibilities that we hope are
+expanded by future students to answer our questions and new ones that
+arise more accurately.
 
 ## 4. Data analysis plan
 
