@@ -148,8 +148,9 @@ instructors <- instructors %>%
                                                "Winer, Joshua") ~ "Lecturer", TRUE ~ "Adjunct"))
 
 
-coa_courses2 <- coa_courses2 %>%
-  left_join(instructors, by = c("Instructor", "Year"))
+coa_courses3 <- coa_courses3 %>%
+  mutate(Year = as.numeric(Year)) %>%
+left_join(instructors, by = c("Instructor", "Year"))
 
 # An example of exploring a hypothetical what could count for resource area requirements
 #coa_courses2 <- coa_courses2 %>%
