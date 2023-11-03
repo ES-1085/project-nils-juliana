@@ -88,6 +88,12 @@ visdat::vis_miss(coa_courses3)
 ![](proposal_files/figure-gfm/vis_missing_data-2.png)<!-- -->
 
 ``` r
+naniar::gg_miss_var(coa_courses3)
+```
+
+![](proposal_files/figure-gfm/vis_missing_data-3.png)<!-- -->
+
+``` r
 instructors <- coa_courses2 %>% distinct(Instructor, Year)
 
 instructors_distinct <- coa_courses2 %>% distinct(Instructor)

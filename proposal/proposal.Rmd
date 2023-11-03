@@ -88,8 +88,9 @@ write_csv(coa_courses, file = "data/coa_courses2.csv")
 visdat::vis_dat(coa_courses3)
 
 visdat::vis_miss(coa_courses3)
-```
 
+naniar::gg_miss_var(coa_courses3)
+```
 
 
 ```{r}
