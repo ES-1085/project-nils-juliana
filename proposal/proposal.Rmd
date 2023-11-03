@@ -93,7 +93,7 @@ naniar::gg_miss_var(coa_courses3)
 ```
 
 
-```{r}
+```{r new_instructor_variables_and_join}
 instructors <- coa_courses2 %>% distinct(Instructor, Year)
 
 instructors_distinct <- coa_courses2 %>% distinct(Instructor)
