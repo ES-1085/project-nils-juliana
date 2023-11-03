@@ -41,6 +41,11 @@ library(ggraph)
 library(tidygraph)
 ```
 
+```{r vis_missing_data}
+visdat::vis_dat(coa_courses3)
+```
+
+
 ```{r}
 coa_courses <- read_excel("data/coa-courses.xlsx")
 coa_courses2 <- read_csv("data/coa_courses2.csv")
