@@ -25,6 +25,9 @@ library(broom)
 # install.packages("visdat")
 # install.packages("naniar")
 
+library(visdat)
+library(naniar)
+
 library(readxl)
 library(tidyverse)
 library(stringr)
