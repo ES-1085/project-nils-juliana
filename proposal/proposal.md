@@ -76,6 +76,18 @@ write_csv(coa_courses, file = "data/coa_courses2.csv")
 ```
 
 ``` r
+visdat::vis_dat(coa_courses3)
+```
+
+![](proposal_files/figure-gfm/vis_missing_data-1.png)<!-- -->
+
+``` r
+visdat::vis_miss(coa_courses3)
+```
+
+![](proposal_files/figure-gfm/vis_missing_data-2.png)<!-- -->
+
+``` r
 instructors <- coa_courses2 %>% distinct(Instructor, Year)
 
 instructors_distinct <- coa_courses2 %>% distinct(Instructor)
