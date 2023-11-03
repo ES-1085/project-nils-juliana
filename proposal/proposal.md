@@ -94,6 +94,23 @@ naniar::gg_miss_var(coa_courses3)
 ![](proposal_files/figure-gfm/vis_missing_data-3.png)<!-- -->
 
 ``` r
+ggplot(coa_courses3,
+       aes(x = as.numeric(Class_Size), 
+           y = as.numeric(Lab_Fee_USD))) + 
+geom_miss_point(alpha = 0.5)
+```
+
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+![](proposal_files/figure-gfm/vis_missing_data-4.png)<!-- -->
+
+``` r
 instructors <- coa_courses2 %>% distinct(Instructor, Year)
 
 instructors_distinct <- coa_courses2 %>% distinct(Instructor)

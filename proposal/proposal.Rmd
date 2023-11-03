@@ -90,6 +90,11 @@ visdat::vis_dat(coa_courses3)
 visdat::vis_miss(coa_courses3)
 
 naniar::gg_miss_var(coa_courses3)
+
+ggplot(coa_courses3,
+       aes(x = as.numeric(Class_Size), 
+           y = as.numeric(Lab_Fee_USD))) + 
+geom_miss_point(alpha = 0.5)
 ```
 
 
