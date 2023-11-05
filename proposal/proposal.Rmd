@@ -181,6 +181,13 @@ left_join(instructors, by = c("Instructor", "Year"))
         # TRUE ~ "Doesn't Count")
 ```
 
+```{r clean_lab_fee}
+coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
+
+print(coa_courses3)
+```
+
+
 
 ## 1. Introduction
 
