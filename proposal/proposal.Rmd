@@ -190,9 +190,13 @@ print(coa_courses3)
 ```
 
 ```{r lab_fee_visualization}
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Lab Fees by Department", x = "Department", y = "Mean Lab Fee (USD)")
 
-
-
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)")
 ```
 
 
