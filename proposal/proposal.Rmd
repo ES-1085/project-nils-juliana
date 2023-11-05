@@ -215,6 +215,30 @@ coa_courses3 %>%
 
 ```
 
+```{r course distributions over terms}
+
+
+
+```
+
+
+```{r class size}
+coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
+
+ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Class Size by Department", x = "Department", y = "Class Size")
+
+ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Class Size by Department", x = "Department", y = "Class Size")
+```
+
+
+```{r Degree requirements}
+
+```
+
 
 ## 1. Introduction
 

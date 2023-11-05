@@ -247,6 +247,43 @@ coa_courses3 %>%
 
 ![](proposal_files/figure-gfm/instructor%20visualization-1.png)<!-- -->
 
+``` r
+coa_courses3 %>%
+  group_by(Year, Department, Level) %>%
+  summarize(course_total = n()) %>%
+  ggplot() +
+  geom_col(aes(x = Year, y = course_total, fill = Level)) +
+  facet_wrap(. ~ Department) +
+  labs(y = "Course Total")
+```
+
+    ## `summarise()` has grouped output by 'Year', 'Department'. You can override
+    ## using the `.groups` argument.
+
+![](proposal_files/figure-gfm/course%20level-1.png)<!-- -->
+
+``` r
+coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
+
+ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Class Size by Department", x = "Department", y = "Class Size")
+```
+
+    ## Warning: Removed 308 rows containing non-finite values (`stat_summary()`).
+
+![](proposal_files/figure-gfm/class%20size-1.png)<!-- -->
+
+``` r
+ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Class Size by Department", x = "Department", y = "Class Size")
+```
+
+    ## Warning: Removed 308 rows containing non-finite values (`stat_boxplot()`).
+
+![](proposal_files/figure-gfm/class%20size-2.png)<!-- -->
+
 ## 1. Introduction
 
 Every term during the registration period, the COA community navigates
