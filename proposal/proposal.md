@@ -193,6 +193,50 @@ left_join(instructors, by = c("Instructor", "Year"))
         # TRUE ~ "Doesn't Count")
 ```
 
+``` r
+coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
+
+coa_courses3$Lab_Fee_USD[is.na(coa_courses3$Lab_Fee_USD)] <- 0
+
+print(coa_courses3)
+```
+
+    ## # A tibble: 1,554 × 16
+    ##    Department CourseNumber CourseDivision CourseName                  Instructor
+    ##    <chr>      <chr>        <chr>          <chr>                       <chr>     
+    ##  1 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  2 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  3 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  4 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  5 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  6 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  7 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ##  8 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ##  9 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ## 10 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ## # ℹ 1,544 more rows
+    ## # ℹ 11 more variables: CourseDescription <chr>, ActiveFlag <lgl>,
+    ## #   Semester <chr>, Year <dbl>, Term <chr>, Level <chr>, Prerequisites <chr>,
+    ## #   Lab_Fee_USD <dbl>, Class_Size <chr>, Degree_Requirements <chr>,
+    ## #   Status <chr>
+
+``` r
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Lab Fees by Department", x = "Department", y = "Mean Lab Fee (USD)") +
+  facet_wrap(vars(Year), ncol = 2)
+```
+
+![](proposal_files/figure-gfm/lab_fee_visualization-1.png)<!-- -->
+
+``` r
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)")
+```
+
+![](proposal_files/figure-gfm/lab_fee_visualization-2.png)<!-- -->
+
 ## 1. Introduction
 
 Every term during the registration period, the COA community navigates
