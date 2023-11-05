@@ -195,7 +195,13 @@ ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
 ```
 
 ```{r instructor visualization}
-
+coa_courses3 %>%
+  group_by(Year, Department, instructor_status) %>%
+  summarize(course_total = n()) %>%
+  ggplot() +
+  geom_col(aes(x = Year, y = course_total, fill = instructor_status)) +
+  facet_wrap(.~Department) +
+  labs(y = "Course Total")
 ```
 
 

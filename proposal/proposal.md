@@ -23,10 +23,6 @@ coa_courses2 <- read_csv("data/coa_courses2.csv")
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
-view(coa_courses)
-```
-
-``` r
 glimpse(coa_courses)
 ```
 
@@ -118,7 +114,7 @@ instructors_distinct <- coa_courses2 %>% distinct(Instructor)
 write_csv(instructors_distinct, file = "data/instructors.csv")
 
 instructors <- instructors %>%
-  mutate(Status = case_when(Instructor %in% c("Anderson, John", 
+  mutate(instructor_status = case_when(Instructor %in% c("Anderson, John", 
                                               "Andrews, Nancy",
                                               "Baker, Jodi",
                                               "Baker, Laurie",
@@ -189,9 +185,67 @@ left_join(instructors, by = c("Instructor", "Year"))
 
 # An example of exploring a hypothetical what could count for resource area requirements
 #coa_courses2 <- coa_courses2 %>%
-  #mutate(course_counts = case_when(Status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
+  #mutate(course_counts = case_when(instructor_status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
         # TRUE ~ "Doesn't Count")
 ```
+
+``` r
+coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
+
+coa_courses3$Lab_Fee_USD[is.na(coa_courses3$Lab_Fee_USD)] <- 0
+
+print(coa_courses3)
+```
+
+    ## # A tibble: 1,554 × 16
+    ##    Department CourseNumber CourseDivision CourseName                  Instructor
+    ##    <chr>      <chr>        <chr>          <chr>                       <chr>     
+    ##  1 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  2 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  3 AD         1011         ADS            Introduction to Arts and D… Mancinell…
+    ##  4 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  5 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  6 AD         1012         ADS            Introduction to Keyboard/P… Cooper, J…
+    ##  7 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ##  8 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ##  9 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ## 10 AD         1013         AD HY          Jazz, Rock, and Blues:  Fr… Cooper, J…
+    ## # ℹ 1,544 more rows
+    ## # ℹ 11 more variables: CourseDescription <chr>, ActiveFlag <lgl>,
+    ## #   Semester <chr>, Year <dbl>, Term <chr>, Level <chr>, Prerequisites <chr>,
+    ## #   Lab_Fee_USD <dbl>, Class_Size <chr>, Degree_Requirements <chr>,
+    ## #   instructor_status <chr>
+
+``` r
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Lab Fees by Department", x = "Department", y = "Mean Lab Fee (USD)")
+```
+
+![](proposal_files/figure-gfm/lab_fee_visualization-1.png)<!-- -->
+
+``` r
+ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)")
+```
+
+![](proposal_files/figure-gfm/lab_fee_visualization-2.png)<!-- -->
+
+``` r
+coa_courses3 %>%
+  group_by(Year, Department, instructor_status) %>%
+  summarize(course_total = n()) %>%
+  ggplot() +
+  geom_col(aes(x = Year, y = course_total, fill = instructor_status)) +
+  facet_wrap(.~Department) +
+  labs(y = "Course Total")
+```
+
+    ## `summarise()` has grouped output by 'Year', 'Department'. You can override
+    ## using the `.groups` argument.
+
+![](proposal_files/figure-gfm/instructor%20visualization-1.png)<!-- -->
 
 ## 1. Introduction
 
