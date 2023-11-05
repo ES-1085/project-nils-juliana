@@ -204,6 +204,16 @@ coa_courses3 %>%
   labs(y = "Course Total")
 ```
 
+```{r course level}
+coa_courses3 %>%
+  group_by(Year, Department, Level) %>%
+  summarize(course_total = n()) %>%
+  ggplot() +
+  geom_col(aes(x = Year, y = course_total, fill = Level)) +
+  facet_wrap(. ~ Department) +
+  labs(y = "Course Total")
+
+```
 
 
 ## 1. Introduction
