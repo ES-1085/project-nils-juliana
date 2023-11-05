@@ -205,6 +205,20 @@ coa_courses3 %>%
   labs(y = "Course Total")
 ```
 
+```{r courses per area and instructors animations}
+
+coa_courses3 %>%
+  ggplot() +
+  geom_bar(aes(y = instructor_status)) +
+  facet_wrap(.~Department, ncol = 2)
+
+#animate to show variations through the years
+#consider creating individual animated plots per department
+# Delete GS & SG. Consider deleting MD & HE too
+
+```
+
+
 ```{r course level}
 coa_courses3 %>%
   group_by(Year, Department, Level) %>%
