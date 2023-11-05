@@ -184,7 +184,15 @@ left_join(instructors, by = c("Instructor", "Year"))
 ```{r clean_lab_fee}
 coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
 
+coa_courses3$Lab_Fee_USD[is.na(coa_courses3$Lab_Fee_USD)] <- 0
+
 print(coa_courses3)
+```
+
+```{r lab_fee_visualization}
+
+
+
 ```
 
 
