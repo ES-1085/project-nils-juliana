@@ -44,8 +44,6 @@ library(tidygraph)
 ```{r}
 coa_courses <- read_excel("data/coa-courses.xlsx")
 coa_courses2 <- read_csv("data/coa_courses2.csv")
-
-view(coa_courses)
 ```
 
 ```{r load-data, }
@@ -55,8 +53,6 @@ glimpse(coa_courses)
 
 
 ```{r import-data-add-variables}
-
-
 coa_courses <- coa_courses %>%
   mutate(Year = str_c(20, str_extract(Semester, "\\d{2}")),
          Term = str_sub(Semester, start = 4, end = 4),
@@ -81,7 +77,6 @@ coa_courses3 %>%
   geom_line(aes(group = Degree_Requirements))
 
 write_csv(coa_courses, file = "data/coa_courses2.csv")
-  
 ```
 
 ```{r vis_missing_data}
@@ -106,7 +101,7 @@ instructors_distinct <- coa_courses2 %>% distinct(Instructor)
 write_csv(instructors_distinct, file = "data/instructors.csv")
 
 instructors <- instructors %>%
-  mutate(Status = case_when(Instructor %in% c("Anderson, John", 
+  mutate(instructor_status = case_when(Instructor %in% c("Anderson, John", 
                                               "Andrews, Nancy",
                                               "Baker, Jodi",
                                               "Baker, Laurie",
@@ -177,7 +172,7 @@ left_join(instructors, by = c("Instructor", "Year"))
 
 # An example of exploring a hypothetical what could count for resource area requirements
 #coa_courses2 <- coa_courses2 %>%
-  #mutate(course_counts = case_when(Status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
+  #mutate(course_counts = case_when(instructor_status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
         # TRUE ~ "Doesn't Count")
 ```
 
@@ -197,6 +192,10 @@ ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
 ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
   geom_boxplot() +
   labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)")
+```
+
+```{r instructor visualization}
+
 ```
 
 
