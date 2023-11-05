@@ -279,6 +279,22 @@ coa_courses3 %>%
 ![](proposal_files/figure-gfm/course%20level-1.png)<!-- -->
 
 ``` r
+# i want a code that shows all the classes in a term by department and then animate over time
+
+ggplot(coa_courses3, aes(x = Semester, fill = Department)) +
+  geom_bar() +
+  labs(
+    title = "Distribution of Courses by Department for Each Semester",
+    x = "Semester",
+    y = "Course Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+![](proposal_files/figure-gfm/course%20distributions%20over%20terms-1.png)<!-- -->
+
+``` r
 coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
 
 ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +

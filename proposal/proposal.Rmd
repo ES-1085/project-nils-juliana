@@ -25,6 +25,15 @@ library(broom)
 # install.packages("visdat")
 # install.packages("naniar")
 
+# install.packages("gganimate")
+# install.packages("gifski")
+# install.packages("plotly")
+
+library(ggplot2)
+library(gganimate)
+library(gifski)
+library(plotly)
+
 library(visdat)
 library(naniar)
 
@@ -227,12 +236,20 @@ coa_courses3 %>%
   geom_col(aes(x = Year, y = course_total, fill = Level)) +
   facet_wrap(. ~ Department) +
   labs(y = "Course Total")
-
 ```
 
 ```{r course distributions over terms}
+# i want a code that shows all the classes in a term by department and then animate over time
 
-
+ggplot(coa_courses3, aes(x = Semester, fill = Department)) +
+  geom_bar() +
+  labs(
+    title = "Distribution of Courses by Department for Each Semester",
+    x = "Semester",
+    y = "Course Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
 
 ```
 
