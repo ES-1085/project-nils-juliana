@@ -96,6 +96,11 @@ coa_courses3 <- coa_courses %>%
                           Term == "C" ~ "SP",
                           TRUE ~ Term)) %>%
 
+
+coa_courses3$Academic_Year_Term <- paste0(coa_courses3$Year, coa_courses3$Term)
+coa_courses3$Academic_Year_Term <- substring(coa_courses3$Academic_Year_Term, 3)
+
+
 coa_courses3 %>%
   # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
   filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY")) %>%
@@ -262,7 +267,7 @@ coa_courses3 %>%
 
 coa_courses3$Department_combined <- ifelse(coa_courses3$Department == "HE", "HS", coa_courses3$Department)
 
-ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Semester, fill = Department_combined)) +
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Academic_Year_Term, fill = Department_combined)) +
   geom_bar() +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
@@ -272,7 +277,7 @@ ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined !=
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Semester, y = after_stat(count), group = Department_combined, color = Department_combined)) +
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Academic_Year_Term, y = after_stat(count), group = Department_combined, color = Department_combined)) +
   geom_line(stat = "count") +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
