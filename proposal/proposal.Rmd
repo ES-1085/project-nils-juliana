@@ -1,7 +1,7 @@
 ---
 title: "Tidy Courses Proposal"
 author: "Nils and Juliana"
-output:
+output: 
   html_document: default
   github_document: default
 ---
@@ -72,7 +72,7 @@ coa_courses <- coa_courses %>%
          Term = str_sub(Semester, start = 4, end = 4),
          Level = str_extract(CourseDescription, pattern = "Level: Intermediate|Level: Introductory|Level: Advanced"),
          Prerequisites = str_extract(CourseDescription, pattern = "Prerequisites[^.]+"),
-         Lab_Fee_Text = str_extract(CourseDescription, pattern = "(?<=Lab fee\\:|Lab Fee\\:|Lab fee \\$|Lab Fee \\$|Course fee\\:|Course Fee\\:|Course fee \\$)[^.]+"),
+         Lab_Fee_Text = str_extract(CourseDescription, pattern = "(?<=Lab fee\\:|Lab Fee\\:|Lab fee \\$|Lab Fee \\$|Course fee\\:|Course Fee\\:|Course fee \\$|Program fee\\:|)[^.]+"),
          Lab_Fee = str_detect(CourseDescription, pattern = "fee|Fee"), 
          Class_Size_Text = str_extract(CourseDescription, pattern = "(?<=Class limit)[^.]+"), # Try adapting for course fee
          Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*")) %>%
@@ -260,8 +260,20 @@ coa_courses3 %>%
 ```{r course distributions over terms}
 # i want a code that shows all the classes in a term by department and then animate over time
 
-ggplot(coa_courses3, aes(x = Semester, fill = Department)) +
+coa_courses3$Department_combined <- ifelse(coa_courses3$Department == "HE", "HS", coa_courses3$Department)
+
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Semester, fill = Department_combined)) +
   geom_bar() +
+  labs(
+    title = "Distribution of Courses by Department for Each Semester",
+    x = "Semester",
+    y = "Course Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Semester, y = after_stat(count), group = Department_combined, color = Department_combined)) +
+  geom_line(stat = "count") +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
     x = "Semester",
