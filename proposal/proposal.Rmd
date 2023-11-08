@@ -94,11 +94,11 @@ coa_courses3 <- coa_courses %>%
   mutate(Term = case_when(Term == "Q" ~ "FA", 
                           Term == "B" ~ "WI",
                           Term == "C" ~ "SP",
-                          TRUE ~ Term)) %>%
+                          TRUE ~ Term))
 
 
-coa_courses3$Academic_Year_Term <- paste0(coa_courses3$Year, coa_courses3$Term)
-coa_courses3$Academic_Year_Term <- substring(coa_courses3$Academic_Year_Term, 3)
+coa_courses3$Year_Term <- paste0(coa_courses3$Year, coa_courses3$Term)
+coa_courses3$Year_Term <- substring(coa_courses3$Year_Term, 3)
 
 
 coa_courses3 %>%
