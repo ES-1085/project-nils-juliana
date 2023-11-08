@@ -1,8 +1,9 @@
 ---
 title: "Tidy Courses Proposal"
 author: "Nils and Juliana"
-output: html_document
-
+output: 
+  html_document: default
+  github_document: default
 ---
 
 ```{r load-packages, message = FALSE}
@@ -85,11 +86,11 @@ coa_courses %>%
   DT::datatable()
 
 
-
 coa_courses3 <- coa_courses %>%
    separate_rows(Degree_Requirements, sep = ", ") %>%
    separate_rows(Degree_Requirements, sep = " ") %>%
-   separate_rows(Degree_Requirements, sep = ",")
+   separate_rows(Degree_Requirements, sep = ",") %>%
+  mutate(Lab_Fee_USD = as.numeric(Lab_Fee_USD))
 
 coa_courses3 %>%
   # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
