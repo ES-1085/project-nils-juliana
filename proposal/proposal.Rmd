@@ -28,11 +28,13 @@ library(broom)
 # install.packages("gganimate")
 # install.packages("gifski")
 # install.packages("plotly")
+# install.packages("DT")
 
 library(ggplot2)
 library(gganimate)
 library(gifski)
 library(plotly)
+library(DT)
 
 library(visdat)
 library(naniar)
@@ -43,6 +45,7 @@ library(stringr)
 library(tidytext)
 library(stopwords)
 library(tidylo)
+
 
 # Network analysis libraries
 library(widyr)
@@ -67,9 +70,20 @@ coa_courses <- coa_courses %>%
          Term = str_sub(Semester, start = 4, end = 4),
          Level = str_extract(CourseDescription, pattern = "Level: Intermediate|Level: Introductory|Level: Advanced"),
          Prerequisites = str_extract(CourseDescription, pattern = "Prerequisites[^.]+"),
-         Lab_Fee_USD = str_extract(CourseDescription, pattern = "(?<=Lab fee\\: \\$)[^.]+"),
-         Class_Size = str_extract(CourseDescription, pattern = "(?<=Class limit\\: )[^.]+"), # Try adapting for course fee
-         Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*"))
+         Lab_Fee_Text = str_extract(CourseDescription, pattern = "(?<=Lab fee\\:|Lab Fee\\:|Lab fee \\$|Lab Fee \\$|Course fee\\:|Course Fee\\:|Course fee \\$)[^.]+"),
+         Lab_Fee = str_detect(CourseDescription, pattern = "fee|Fee"), 
+         Class_Size_Text = str_extract(CourseDescription, pattern = "(?<=Class limit)[^.]+"), # Try adapting for course fee
+         Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*")) %>%
+  mutate(Lab_Fee_USD = str_extract(Lab_Fee_Text, pattern = "[:digit:]+"),
+         Class_Size = str_extract(Class_Size_Text, pattern = "[:digit:]+")) %>%
+  mutate(Lab_Fee_USD = ifelse(str_detect(Lab_Fee_Text, pattern = "None|none"), 0, Lab_Fee_USD))
+
+coa_courses %>%
+  filter(Lab_Fee == TRUE, is.na(Lab_Fee_USD)) %>%
+  select(Lab_Fee_USD, Lab_Fee_Text, CourseDescription) %>%
+  DT::datatable()
+
+
 
 coa_courses3 <- coa_courses %>%
    separate_rows(Degree_Requirements, sep = ", ") %>%
@@ -79,7 +93,6 @@ coa_courses3 <- coa_courses %>%
 coa_courses3 %>%
   # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
   filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY")) %>%
-
   group_by(Year, Degree_Requirements) %>%
   summarize(number_courses_per_degree = n()) %>%
   ggplot(aes(x = Year, y = number_courses_per_degree, color = Degree_Requirements)) +
