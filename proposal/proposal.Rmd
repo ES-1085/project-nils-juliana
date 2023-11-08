@@ -94,7 +94,7 @@ coa_courses3 <- coa_courses %>%
   mutate(Term = case_when(Term == "Q" ~ "FA", 
                           Term == "B" ~ "WI",
                           Term == "C" ~ "SP",
-                          TRUE ~ Term))
+                          TRUE ~ Term)) %>%
 
 coa_courses3 %>%
   # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
