@@ -267,7 +267,7 @@ coa_courses3 %>%
 
 coa_courses3$Department_combined <- ifelse(coa_courses3$Department == "HE", "HS", coa_courses3$Department)
 
-ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Academic_Year_Term, fill = Department_combined)) +
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Year_Term, fill = Department_combined)) +
   geom_bar() +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
@@ -277,7 +277,7 @@ ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined !=
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Academic_Year_Term, y = after_stat(count), group = Department_combined, color = Department_combined)) +
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Year_Term, y = after_stat(count), group = Department_combined, color = Department_combined)) +
   geom_line(stat = "count") +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
