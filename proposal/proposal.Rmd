@@ -295,13 +295,14 @@ ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined !=
 ```{r class size}
 coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
 
-ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
+ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), aes(x = Department, y = Class_Size)) +
   geom_bar(stat = "summary", fun = "mean") +
   labs(title = "Class Size by Department", x = "Department", y = "Class Size")
 
-ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
-  geom_violin() +
+ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), aes(x = Department, y = Class_Size)) +   geom_violin() + 
   labs(title = "Distribution of Class Size by Department", x = "Department", y = "Class Size")
+
+
 ```
 
 
