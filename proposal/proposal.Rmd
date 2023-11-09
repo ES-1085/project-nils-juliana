@@ -107,6 +107,7 @@ coa_courses3 %>%
   group_by(Year, Degree_Requirements) %>%
   summarize(number_courses_per_degree = n()) %>%
   ggplot(aes(x = Year, y = number_courses_per_degree, color = Degree_Requirements)) +
+  geom_point() +
   geom_line(aes(group = Degree_Requirements))
 
 write_csv(coa_courses, file = "data/coa_courses2.csv")
@@ -259,7 +260,8 @@ coa_courses3 %>%
   ggplot() +
   geom_col(aes(x = Year, y = course_total, fill = Level)) +
   facet_wrap(. ~ Department) +
-  labs(y = "Course Total")
+  labs(y = "Course Total") 
+  
 ```
 
 ```{r course distributions over terms}
