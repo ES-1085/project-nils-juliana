@@ -41,6 +41,11 @@ library(DT)
 library(visdat)
 library(naniar)
 
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+
+
+
 library(readxl)
 library(tidyverse)
 library(stringr)
@@ -227,6 +232,7 @@ ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
 ggplot(coa_courses3, aes(x = Department, y = Lab_Fee_USD)) +
   geom_boxplot() +
   labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)")
+
 ```
 
 ```{r instructor visualization}
@@ -235,6 +241,7 @@ coa_courses3 %>%
   summarize(course_total = n()) %>%
   ggplot() +
   geom_col(aes(x = Year, y = course_total, fill = instructor_status)) +
+  scale_fill_brewer(palette = "Spectral") +
   facet_wrap(.~Department) +
   labs(y = "Course Total")
 ```
