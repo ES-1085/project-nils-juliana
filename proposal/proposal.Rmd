@@ -298,7 +298,7 @@ ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
   labs(title = "Class Size by Department", x = "Department", y = "Class Size")
 
 ggplot(coa_courses3, aes(x = Department, y = Class_Size)) +
-  geom_boxplot() +
+  geom_violin() +
   labs(title = "Distribution of Class Size by Department", x = "Department", y = "Class Size")
 ```
 
