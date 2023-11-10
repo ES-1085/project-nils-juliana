@@ -77,7 +77,7 @@ coa_courses <- coa_courses %>%
          Term = str_sub(Semester, start = 4, end = 4),
          Level = str_extract(CourseDescription, pattern = "Level: Intermediate|Level: Introductory|Level: Advanced"),
          Prerequisites = str_extract(CourseDescription, pattern = "Prerequisites[^.]+"),
-         Lab_Fee_Text = str_extract(CourseDescription, pattern = "(?<=Lab fee\\:|Lab Fee\\:|Lab fee \\$|Lab Fee \\$|Course fee\\:|Course Fee\\:|Course fee \\$|Program fee\\:|)[^.]+"),
+         Lab_Fee_Text = str_extract(CourseDescription, pattern = "(?<=Lab fee\\:|Lab Fee\\:|Lab fee \\$|Lab Fee \\$|Course fee\\:|Course Fee\\:|Course fee \\$)[^.]+"),
          Lab_Fee = str_detect(CourseDescription, pattern = "fee|Fee"), 
          Class_Size_Text = str_extract(CourseDescription, pattern = "(?<=Class limit)[^.]+"), # Try adapting for course fee
          Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*")) %>%
