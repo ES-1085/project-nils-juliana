@@ -257,6 +257,8 @@ coa_courses3 %>%
 #consider creating individual animated plots per department
 # Delete GS & SG. Consider deleting MD & HE too
 
+
+
 ```
 
 
@@ -265,7 +267,7 @@ coa_courses3 %>%
   group_by(Year, Department, Level) %>%
   summarize(course_total = n()) %>%
   ggplot() +
-  geom_col(aes(x = Year, y = course_total, fill = Level)) +
+  geom_col(filter(!Department %in% c('HE', 'SG', 'GS')),aes(x = Year, y = course_total, fill = Level)) +
   facet_wrap(. ~ Department) +
   labs(y = "Course Total") 
   
@@ -276,13 +278,19 @@ coa_courses3 %>%
 
 coa_courses3$Department_combined <- ifelse(coa_courses3$Department == "HE", "HS", coa_courses3$Department)
 
-ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = Year_Term, fill = Department_combined)) +
+ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined != "GS"), aes(x = fct_relevel(Year_Term, c("18WI", "18SP",
+        "18FA", "19WI", "19SP",
+        "19FA", "20WI", "20SP",
+        "20FA", "21WI", "21SP",
+        "21FA", "22WI", "22SP",
+        "22FA", "23WI", "23SP")), fill = fct_relevel(Department_combined, c("MD", "ED","AD", "ES", "HS" )))) +
   geom_bar() +
+   scale_fill_brewer(palette = "Spectral") +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
     x = "Semester",
-    y = "Course Count"
-  ) +
+    y = "Course Count",
+  fill = "Department") +
   theme_minimal() +
   theme(legend.position = "bottom")
 
@@ -291,13 +299,11 @@ ggplot(subset(coa_courses3, Department_combined != "SG" & Department_combined !=
   labs(
     title = "Distribution of Courses by Department for Each Semester",
     x = "Semester",
-    y = "Course Count"
-  ) +
+    y = "Course Count") +
   theme_minimal() +
   theme(legend.position = "bottom")
 
 ```
-
 
 ```{r class size}
 coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
