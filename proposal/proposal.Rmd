@@ -267,7 +267,7 @@ coa_courses3 %>%
   group_by(Year, Department, Level) %>%
   summarize(course_total = n()) %>%
   ggplot() +
-  geom_col(filter(!Department %in% c('HE', 'SG', 'GS')),aes(x = Year, y = course_total, fill = Level)) +
+  geom_col(filter(!Department %in% c('HE', 'SG', 'GS')), aes(x = Year, y = course_total, fill = Level)) +
   facet_wrap(. ~ Department) +
   labs(y = "Course Total") 
   
@@ -303,7 +303,7 @@ P1 + facet_wrap(~Department) +
     y = "Term",
   fill = "Instructor Status") 
 
-ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(x = Year_Term, y = after_stat(count), group = Department_combined, color = Department_combined)) +
+ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(x = Year_Term, y = after_stat(count), group = Department, color = Department)) +
   geom_line(stat = "count") +
   labs(
     title = "Distribution of Courses by Department for Each Semester",
