@@ -266,11 +266,11 @@ coa_courses3 %>%
 coa_courses3 %>%
   group_by(Year, Department, Level) %>%
   summarize(course_total = n()) %>%
-  ggplot() +
-  geom_col(filter(!Department %in% c('HE', 'SG', 'GS')),aes(x = Year, y = course_total, fill = Level)) +
-  facet_wrap(. ~ Department) +
-  labs(y = "Course Total") 
-  
+  filter(!Department %in% c('HE', 'SG', 'GS')) %>%
+  ggplot(aes(x = Year, y = course_total, fill = Level)) +
+  geom_col() +
+  facet_wrap(~Department) +
+  labs(y = "Course Total")
 ```
 
 ```{r course distributions over terms}
@@ -338,6 +338,32 @@ P2 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" 
   view_follow()
 
 ```
+
+```{r}
+P2 <- ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), 
+             aes(y = fct_rev(fct_relevel(Year_Term, c("18WI", "18SP", "18FA", "19WI", "19SP", "19FA", 
+                                                      "20WI", "20SP", "20FA", "21WI", "21SP", "21FA", 
+                                                      "22WI", "22SP", "22FA", "23WI", "23SP"))))) +
+  scale_fill_brewer(palette = "RdBu") +
+  theme_dark() +
+  theme(legend.position = "bottom") 
+
+animated_plot <- P2 +  
+  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" ))), position = "fill") +
+  labs(
+    title = "Distribution of Courses by Department for Each Term",
+    x = "Course Proportion",
+    y = "Term",
+    fill = "Department"
+  ) +
+  transition_states(Year_Term, transition_length = 3, state_length = 1, wrap = FALSE) +
+  ease_aes('linear') +
+  theme_minimal() +
+  view_follow()
+
+
+```
+
 
 
 ```{r class size}
