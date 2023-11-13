@@ -126,6 +126,15 @@ coa_courses3 %>%
   geom_point(size = 2) +
   scale_colour_viridis_d()
 
+coa_courses3 %>%
+  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  filter(CourseDivision %in% c("ES", "ED", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
+  group_by(Year, CourseDivision) %>%
+  summarize(number_courses_per_degree = n()) %>%
+  ggplot(aes(x = Year, y = number_courses_per_degree, color = CourseDivision)) +
+  geom_point() +
+  geom_line(aes(group = CourseDivision))
+
 write_csv(coa_courses, file = "data/coa_courses2.csv")
 ```
 
