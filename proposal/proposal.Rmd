@@ -108,14 +108,91 @@ coa_courses3$Year_Term <- substring(coa_courses3$Year_Term, 3)
 
 coa_courses3 %>%
   # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
-  filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY")) %>%
+  filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, Degree_Requirements) %>%
   summarize(number_courses_per_degree = n()) %>%
   ggplot(aes(x = Year, y = number_courses_per_degree, color = Degree_Requirements)) +
   geom_point() +
-  geom_line(aes(group = Degree_Requirements))
+  geom_line(aes(group = Degree_Requirements)) +
+  scale_colour_viridis_d()
+
+coa_courses3 %>%
+  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  filter(CourseDivision %in% c("ES", "ED", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
+  group_by(Year, CourseDivision) %>%
+  summarize(number_courses_per_degree = n()) %>%
+  ggplot(aes(x = Year, y = number_courses_per_degree, color = CourseDivision)) +
+   geom_line(aes(group = CourseDivision)) +
+  geom_point(size = 2) +
+  scale_colour_viridis_d()
 
 write_csv(coa_courses, file = "data/coa_courses2.csv")
+```
+
+```{r graduation requirement proportion per year}
+
+coa_courses3$Year_Term <- as.factor(coa_courses3$Year_Term)
+
+coa_courses3 %>%
+  mutate(Requirement_opportunity = case_when(
+    CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
+    CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
+    CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
+    CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
+    CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
+    CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
+    CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
+    CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
+  )) %>%
+  filter(!is.na(Requirement_opportunity)) %>%
+  group_by(Year_Term, Requirement_opportunity) %>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = fct_relevel(Year_Term, 
+                             c("18WI", "18SP", "18FA", 
+                               "19WI", "19SP", "19FA", 
+                               "20WI", "20SP", "20FA", 
+                               "21WI", "21SP", "21FA", 
+                               "22WI", "22SP", "22FA", 
+                               "23WI", "23SP")), 
+             y = count, 
+             color = Requirement_opportunity, 
+             group = Requirement_opportunity)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 2) +
+  labs(title = "Number of Courses Available to Meet Requirements by Term", 
+       subtitle = "From Winter 2018 to Spring 2023",
+       x = "Year-Term", 
+       y = "Number of Courses", 
+       color = "Requirement") +
+  scale_colour_viridis_d()
+
+
+coa_courses3 %>%
+  mutate(Requirement_opportunity = case_when(
+    CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
+    CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
+    CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
+    CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
+    CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
+    CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
+    CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
+    CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
+  )) %>%
+  filter(!is.na(Requirement_opportunity)) %>%
+  group_by(Year, Requirement_opportunity) %>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = Year, 
+             y = count, 
+             color = Requirement_opportunity, 
+             group = Requirement_opportunity)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 2) +
+  labs(title = "Number of Courses Available to Meet Requirements Over the Years", 
+       x = "Year", 
+       y = "Number of Courses",
+       color = "Requirement") +
+  scale_colour_viridis_d()
+
 ```
 
 ```{r vis_missing_data}
@@ -226,18 +303,20 @@ print(coa_courses3)
 ```{r lab_fee_visualization}
 coa_courses3 %>%
   filter(!Department %in% c('SG', 'GS', 'HE')) %>%
-  ggplot(aes(x = Department, y = Lab_Fee_USD)) +
+  ggplot(aes(x = Department, y = Lab_Fee_USD, fill = Department)) +
   geom_bar(stat = "summary", fun = "mean") +
+  scale_fill_viridis_d() +
   labs(title = "Lab Fees by Department", x = "Department", y = "Mean Lab Fee (USD)") +
   facet_wrap(vars(Year), ncol = 2) +
   coord_cartesian(ylim = c(0, 270))
 
 coa_courses3 %>%
   filter(!Department %in% c('SG', 'GS', 'HE')) %>%
-  ggplot(aes(x = Department, y = Lab_Fee_USD)) +
+  ggplot(aes(x = Department, y = Lab_Fee_USD, colour = Department)) +
   geom_boxplot() +
+  scale_colour_viridis_d() +
   labs(title = "Distribution of Lab Fees by Department", x = "Department", y = "Lab Fee (USD)") +
-  coord_cartesian(ylim = c(0, 270))
+  coord_cartesian(ylim = c(0, 270)) 
 
 ```
 
@@ -248,7 +327,7 @@ coa_courses3 %>%
   filter(!Department %in% c('HE', 'SG', 'GS')) %>%
   ggplot(aes(x = Year, y = course_total, fill = instructor_status)) +
   geom_col() +
-  scale_fill_brewer(palette = "RdBu") +
+  scale_fill_viridis_d() +
   facet_wrap(. ~ Department) +
   labs(y = "Course Total")
 ```
@@ -257,8 +336,9 @@ coa_courses3 %>%
 coa_courses3 %>%
   filter(!Department %in% c('SG', 'GS', 'HE')) %>%
   ggplot() +
-  geom_bar(aes(y = instructor_status)) +
-  facet_wrap(~ Department, ncol = 2)
+  geom_bar(aes(y = instructor_status, fill = instructor_status)) +
+  facet_wrap(~ Department, ncol = 2) +
+scale_fill_viridis_d() 
 
 #animate to show variations through the years
 #consider creating individual animated plots per department
@@ -276,6 +356,7 @@ coa_courses3 %>%
   filter(!Department %in% c('HE', 'SG', 'GS')) %>%
   ggplot(aes(x = Year, y = course_total, fill = Level)) +
   geom_col() +
+  scale_fill_viridis_d() +
   facet_wrap(~Department) +
   labs(y = "Course Total")
 ```
@@ -291,8 +372,7 @@ P1 <- ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Depa
         "20FA", "21WI", "21SP",
         "21FA", "22WI", "22SP",
         "22FA", "23WI", "23SP"))))) +
-   scale_fill_brewer(palette = "RdBu") +
-  theme_dark() +
+   scale_colour_viridis_d() +
   theme(legend.position = "bottom") 
 
 P1 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" ))), position = "fill") +
@@ -300,15 +380,19 @@ P1 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" 
     title = "Distribution of Courses by Department for Each Term",
     x = "Course Proportion",
     y = "Term",
-  fill = "Department") 
+  fill = "Department") +
+  scale_fill_viridis_d()
 
-P1 + facet_wrap(~Department) + 
-  geom_bar(aes(fill = instructor_status), position = "fill") + 
+P1 + facet_wrap(~ Department) + 
+  geom_bar(aes(fill = instructor_status), 
+           position = "fill") + 
   labs(title = "Distribution of Courses Taught in Departments by Different Instructor Status",
-  subtitle = "Through the Terms from Winter of 2018 to Spring 2023",
+  subtitle = "From Winter of 2018 to Spring 2023",
     x = "Course Proportion",
     y = "Term",
-  fill = "Instructor Status") 
+  fill = "Instructor Status") +
+  scale_fill_viridis_d()
+ 
 
 ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(x = Year_Term, y = after_stat(count), group = Department, color = Department)) +
   geom_line(stat = "count") +
@@ -317,7 +401,8 @@ ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department
     x = "Semester",
     y = "Course Count") +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_colour_viridis_d()
 
 ```
 
@@ -349,12 +434,19 @@ P2 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" 
 ```{r class size}
 coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
 
-ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), aes(x = Department, y = Class_Size)) +
+ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), 
+       aes(x = Department, y = Class_Size, fill = Department)) +
   geom_bar(stat = "summary", fun = "mean") +
+  scale_fill_viridis_d() +
   labs(title = "Class Size by Department", x = "Department", y = "Class Size")
 
-ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), aes(x = Department, y = Class_Size)) +   geom_violin() + 
-  labs(title = "Distribution of Class Size by Department", x = "Department", y = "Class Size")
+ggplot(coa_courses3 %>% 
+         filter(!Department %in% c('HE', 'SG', 'GS')), 
+          aes(x = Department, y = Class_Size, fill = Department)) +   
+           geom_violin() + 
+          scale_fill_viridis_d() +
+          labs(title = "Distribution of Class Size by Department", 
+               x = "Department", y = "Class Size")
 
 
 ```
