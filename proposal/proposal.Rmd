@@ -81,6 +81,8 @@ coa_courses <- coa_courses %>%
          Lab_Fee = str_detect(CourseDescription, pattern = "fee|Fee"), 
          Class_Size_Text = str_extract(CourseDescription, pattern = "(?<=Class limit)[^.]+"), # Try adapting for course fee
          Degree_Requirements = str_extract(CourseDescription, pattern = "(?<=Meets the following degree requirements\\: ).*")) %>%
+  mutate(Degree_Requirements = str_replace(Degree_Requirements, pattern = "\\.", replacement = "")) %>%
+  mutate(Degree_Requirements = str_replace_all(Degree_Requirements, pattern = " |\\*", replacement = "")) %>%
   mutate(Lab_Fee_USD = str_extract(Lab_Fee_Text, pattern = "[:digit:]+"),
          Class_Size = str_extract(Class_Size_Text, pattern = "[:digit:]+")) %>%
   mutate(Lab_Fee_USD = ifelse(str_detect(Lab_Fee_Text, pattern = "None|none"), 0, Lab_Fee_USD))
@@ -92,9 +94,7 @@ coa_courses %>%
 
 
 coa_courses3 <- coa_courses %>%
-   separate_rows(Degree_Requirements, sep = ", ") %>%
-   separate_rows(Degree_Requirements, sep = " ") %>%
-   separate_rows(Degree_Requirements, sep = ",") %>%
+#  separate_rows(Degree_Requirements, sep = ", | |,") %>%
   mutate(Lab_Fee_USD = as.numeric(Lab_Fee_USD)) %>%
   mutate(Term = case_when(Term == "Q" ~ "FA", 
                           Term == "B" ~ "WI",
@@ -107,7 +107,8 @@ coa_courses3$Year_Term <- substring(coa_courses3$Year_Term, 3)
 
 
 coa_courses3 %>%
-  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  separate_rows(Degree_Requirements, sep = ", | |,") %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, .keep_all = TRUE) %>% # This will be added to drop duplicates
   filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, Degree_Requirements) %>%
   summarize(number_courses_per_degree = n()) %>%
@@ -117,7 +118,8 @@ coa_courses3 %>%
   scale_colour_viridis_d()
 
 coa_courses3 %>%
-  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  separate_rows(CourseDivision, sep = ", | |,") %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, .keep_all = TRUE) %>% # This will be added to drop duplicates
   filter(CourseDivision %in% c("ES", "ED", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, CourseDivision) %>%
   summarize(number_courses_per_degree = n()) %>%
@@ -127,7 +129,8 @@ coa_courses3 %>%
   scale_colour_viridis_d()
 
 coa_courses3 %>%
-  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
+  separate_rows(CourseDivision, sep = ", | |,") %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, .keep_all = TRUE) %>% # This will be added to drop duplicates
   filter(CourseDivision %in% c("ES", "ED", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, CourseDivision) %>%
   summarize(number_courses_per_degree = n()) %>%
@@ -143,16 +146,19 @@ write_csv(coa_courses, file = "data/coa_courses2.csv")
 coa_courses3$Year_Term <- as.factor(coa_courses3$Year_Term)
 
 coa_courses3 %>%
-  mutate(Requirement_opportunity = case_when(
-    CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
-    CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
-    CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
-    CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
-    CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
-    CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
-    CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
-    CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
-  )) %>%
+  separate_rows(CourseDivision, sep = ", | |,") %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, .keep_all = TRUE) %>% # This will be added to drop duplicates
+  mutate(Requirement_opportunity = CourseDivision) %>%
+  # mutate(Requirement_opportunity = case_when(
+  #   CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
+  #   CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
+  #   CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
+  #   CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
+  #   CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
+  #   CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
+  #   CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
+  #   CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
+  # )) %>%
   filter(!is.na(Requirement_opportunity)) %>%
   group_by(Year_Term, Requirement_opportunity) %>%
   summarize(count = n()) %>%
@@ -177,24 +183,28 @@ coa_courses3 %>%
 
 
 coa_courses3 %>%
-  mutate(Requirement_opportunity = case_when(
-    CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
-    CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
-    CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
-    CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
-    CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
-    CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
-    CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
-    CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
-  )) %>%
+  separate_rows(CourseDivision, sep = ", | |,") %>%
+  distinct(Department, CourseDivision, CourseNumber, Year_Term) %>% # This will be added to drop duplicates
+  mutate(Requirement_opportunity = CourseDivision) %>%
+  # mutate(Requirement_opportunity = case_when(
+  #   CourseDivision %in% c("AD", "AD HY", "AD HY WFO", "AD WFO") ~ "AD",
+  #   CourseDivision %in% c("ADS", "ADS HY") ~ "ADS",
+  #   CourseDivision %in% c("ED", "HS ED", "W ED") ~ "ED", 
+  #   CourseDivision %in% c("HY", "W HS HY", "W HY", "HS HY", "ES HY", "ADS HY", "AD HY WFO", "AD HY") ~ "HY", 
+  #   CourseDivision %in% c("HS", "HS ED", "HS HY", "HS QR", "HS WFO", "W HS", "W HS HY") ~ "HS",
+  #   CourseDivision %in% c("ES", "ES HY", "ES QR", "W ES") ~ "ES",
+  #   CourseDivision %in% c("QR", "ES QR", "HS QR") ~ "QR",
+  #   CourseDivision %in% c("W", "W ED", "W ES", "W HS", "W HS HY", "W HY") ~ "W"
+  # )) %>%
   filter(!is.na(Requirement_opportunity)) %>%
+  filter(Requirement_opportunity %in% c("W", "ES", "HS", "HY", "QR", "AD", "ADS")) %>%
   group_by(Year, Requirement_opportunity) %>%
   summarize(count = n()) %>%
   ggplot(aes(x = Year, 
              y = count, 
              color = Requirement_opportunity, 
              group = Requirement_opportunity)) +
-  geom_line(size = 1.5) +
+  geom_line(linewidth = 1.5) +
   geom_point(size = 2) +
   labs(title = "Number of Courses Available to Meet Requirements Over the Years", 
        x = "Year", 
@@ -202,6 +212,7 @@ coa_courses3 %>%
        color = "Requirement") +
   scale_colour_viridis_d()
 
+ggsave(filename = "Number_Courses_Available.png", width = 10, height = 7)
 ```
 
 ```{r vis_missing_data}
@@ -229,7 +240,7 @@ instructors <- instructors %>%
   mutate(instructor_status = case_when(Instructor %in% c("Anderson, John", 
                                               "Andrews, Nancy",
                                               "Baker, Jodi",
-                                              "Baker, Laurie",
+                                              "Baker , Laurie",
                                               "Borden, Richard",
                                               "Carpenter, William",
                                               "Cline, Ken",
@@ -253,7 +264,7 @@ instructors <- instructors %>%
                                               "Mancinelli, Isabel",
                                               "McKown, Jamie",
                                               "Morse, Suzanne",
-                                               "Petersen Christopher",
+                                               "Petersen, Christopher",
                                               "Ressel, Stephen",
                                               "Schrade, Daniel Kojo",
                                               "Stabinsky, Doreen",
@@ -275,7 +286,7 @@ instructors <- instructors %>%
                                               "Fuller, Linda",
                                               "Gibson, David",
                                               "Teaching Staff",
-                                              "Longsworth, Gordon") ~ "Teaching Staff",
+                                              "Longsworth, Gordon", "Graham, Carrie") ~ "Teaching Staff",
                             Instructor %in% c("Beach, Desmond",
                                               "Chien, Ming-Tso",
                                               "Downing, E. Saffronia",
@@ -293,13 +304,103 @@ instructors <- instructors %>%
 
 coa_courses3 <- coa_courses3 %>%
   mutate(Year = as.numeric(Year)) %>%
-left_join(instructors, by = c("Instructor", "Year"))
+  left_join(instructors, by = c("Instructor", "Year"))
 
 # An example of exploring a hypothetical what could count for resource area requirements
 #coa_courses2 <- coa_courses2 %>%
   #mutate(course_counts = case_when(instructor_status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
         # TRUE ~ "Doesn't Count")
 ```
+
+```{r Laurie - exploring courses taught by permanent faculty and adjuncts that could meet the degree requirement}
+
+coa_courses3 %>%
+  group_by(Instructor) %>% 
+  mutate(Num_Courses_Taught = 1:n()) %>%
+  ungroup() %>%
+  filter(Num_Courses_Taught > 3 & instructor_status == "Adjunct" &
+           is.na(Degree_Requirements) == TRUE | Degree_Requirements %in% c("None")) %>%
+  group_by(Year, Department) %>%
+  summarize(count = n()) %>%
+  ggplot() +
+  geom_line(aes(x = Year, y = count, color = Department)) +
+  labs(title = "Number adjunct courses eligible under 3 course rule")
+
+
+ggsave(filename = "Number_Courses_Eligible_Under_Three_Course_Rule.png", width = 10, height = 7)
+
+coa_courses3 %>%
+  group_by(Instructor) %>% 
+  mutate(Num_Courses_Taught = 1:n()) %>%
+  ungroup() %>%  arrange(fct_relevel(instructor_status, "Permanent Faculty")) %>%
+  separate_rows(Degree_Requirements, sep = ", | |,") %>%
+  mutate(Academic_Year = case_when(str_detect(Year_Term, pattern = "FA") ~ paste0("AY ", Year, "-", Year+1),
+                                   TRUE ~ paste0("AY ",Year-1, "-", Year))) %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, Academic_Year, .keep_all = TRUE) %>%
+  filter(Num_Courses_Taught > 3 & instructor_status == "Adjunct") %>%
+  group_by(Department, Degree_Requirements, Year_Term) %>%
+  count()
+  
+
+coa_courses3 %>%
+  separate_rows(Degree_Requirements, sep = ", | |,") %>%
+  arrange(fct_relevel(instructor_status, "Permanent Faculty")) %>%
+  mutate(Academic_Year = case_when(str_detect(Year_Term, pattern = "FA") ~ paste0("AY ", Year, "-", Year+1),
+                                   TRUE ~ paste0("AY ",Year-1, "-", Year))) %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, Academic_Year, .keep_all = TRUE) %>% # This will be added to drop duplicates
+  filter(Degree_Requirements %in% c("ES", "HS", "HY", "AD", "ADS")) %>%
+  group_by(Academic_Year, Degree_Requirements, instructor_status) %>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = fct_rev(Academic_Year), 
+             y = count, 
+             fill = fct_rev(fct_infreq(instructor_status)))) +
+  geom_col() +
+  labs(title = "Number of Courses Available That Meet Requirements Over the Year", 
+       subtitle = "By Instructor Status",
+       x = "Academic Year", 
+       y = "Number of Courses",
+       fill = "Instructor Status") +
+  scale_colour_viridis_d() +
+  facet_wrap(~Degree_Requirements)  +
+  coord_flip()
+
+ggsave(filename = "Number_Courses_Meeting_HS_HY_ES.png", width = 10, height = 7)
+
+coa_courses3 %>%
+  separate_rows(Degree_Requirements, sep = ", | |,") %>%
+  arrange(fct_relevel(instructor_status, "Permanent Faculty")) %>%
+  mutate(Academic_Year = case_when(str_detect(Year_Term, pattern = "FA") ~ paste0("AY ", Year, "-", Year + 1),
+                                   TRUE ~ paste0("AY ",Year-1, "-", Year))) %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, Academic_Year, .keep_all = TRUE) %>% # This will be added to drop duplicates
+  filter(Degree_Requirements %in% c("QR"), Year == 2022) %>%
+  group_by(Year_Term, Degree_Requirements, Instructor, instructor_status) %>%
+  summarize(count = n()) 
+
+coa_courses3 %>%
+  separate_rows(Degree_Requirements, sep = ", | |,") %>%
+  arrange(fct_relevel(instructor_status, "Permanent Faculty")) %>%
+  mutate(Academic_Year = case_when(str_detect(Year_Term, pattern = "FA") ~ paste0("AY ", Year, "-", Year+1),
+                                   TRUE ~ paste0("AY ",Year-1, "-", Year))) %>%
+  distinct(Degree_Requirements, CourseNumber, Year_Term, Academic_Year, .keep_all = TRUE) %>% # This will be added to drop duplicates
+  filter(Degree_Requirements %in% c("W", "QR")) %>%
+  group_by(Academic_Year, Degree_Requirements, instructor_status) %>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = fct_rev(Academic_Year), 
+             y = count, 
+             fill = fct_rev(fct_infreq(instructor_status)))) +
+  geom_col() +
+  labs(title = "Number of Courses Available That Meet Requirements Over the Year", 
+       subtitle = "By Instructor Status",
+       x = "Year", 
+       y = "Number of Courses",
+       fill = "Instructor Status") +
+  scale_colour_viridis_d() +
+  facet_wrap(~Degree_Requirements) +
+  coord_flip()
+
+ggsave(filename = "Number_Courses_Meeting_QR_W.png", width = 10, height = 7)
+```
+
 
 ```{r clean_lab_fee}
 coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
