@@ -23,7 +23,6 @@ library(broom)
  # install.packages("ggraph")
  # install.packages("tidygraph")
 
-
 # install.packages("visdat")
 # install.packages("naniar")
 
@@ -31,6 +30,7 @@ library(broom)
 # install.packages("gifski")
 # install.packages("plotly")
 # install.packages("DT")
+#install.packages("RColorBrewer")
 
 library(ggplot2)
 library(gganimate)
@@ -41,10 +41,7 @@ library(DT)
 library(visdat)
 library(naniar)
 
-#install.packages("RColorBrewer")
 library(RColorBrewer)
-
-
 
 library(readxl)
 library(tidyverse)
@@ -52,7 +49,6 @@ library(stringr)
 library(tidytext)
 library(stopwords)
 library(tidylo)
-
 
 # Network analysis libraries
 library(widyr)
@@ -107,7 +103,6 @@ coa_courses3$Year_Term <- substring(coa_courses3$Year_Term, 3)
 
 
 coa_courses3 %>%
-  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
   filter(Degree_Requirements %in% c("ES", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, Degree_Requirements) %>%
   summarize(number_courses_per_degree = n()) %>%
@@ -117,7 +112,6 @@ coa_courses3 %>%
   scale_colour_viridis_d()
 
 coa_courses3 %>%
-  # distinct(Department, CourseNumber, Term, Year) %>% # This will be added to drop duplicates
   filter(CourseDivision %in% c("ES", "ED", "ADS", "AD", "QR", "HS", "HY", "W")) %>%
   group_by(Year, CourseDivision) %>%
   summarize(number_courses_per_degree = n()) %>%
@@ -295,13 +289,9 @@ coa_courses3 <- coa_courses3 %>%
   mutate(Year = as.numeric(Year)) %>%
 left_join(instructors, by = c("Instructor", "Year"))
 
-# An example of exploring a hypothetical what could count for resource area requirements
-#coa_courses2 <- coa_courses2 %>%
-  #mutate(course_counts = case_when(instructor_status %in% c("Permanent Teaching Staff", "Permanent full-time", "Permanent part-time")) ~ "Count",
-        # TRUE ~ "Doesn't Count")
 ```
 
-```{r clean_lab_fee}
+```{r clean lab fee}
 coa_courses3$Lab_Fee_USD <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Lab_Fee_USD))
 
 coa_courses3$Lab_Fee_USD[is.na(coa_courses3$Lab_Fee_USD)] <- 0
@@ -309,7 +299,7 @@ coa_courses3$Lab_Fee_USD[is.na(coa_courses3$Lab_Fee_USD)] <- 0
 print(coa_courses3)
 ```
 
-```{r lab_fee_visualization}
+```{r lab fee visualization}
 coa_courses3 %>%
   filter(!Department %in% c('SG', 'GS', 'HE')) %>%
   ggplot(aes(x = Department, y = Lab_Fee_USD, fill = Department)) +
@@ -349,16 +339,10 @@ coa_courses3 %>%
   facet_wrap(~ Department, ncol = 2) +
 scale_fill_viridis_d() 
 
-#animate to show variations through the years
-#consider creating individual animated plots per department
-# Delete GS & SG. Consider deleting MD & HE too
-
-
-
 ```
 
 
-```{r course level}
+```{r course level Visualization}
 coa_courses3 %>%
   group_by(Year, Department, Level) %>%
   summarize(course_total = n()) %>%
@@ -370,11 +354,7 @@ coa_courses3 %>%
   labs(y = "Course Total")
 ```
 
-```{r course distributions over terms}
-# i want a code that shows all the classes in a term by department and then animate over time
-
-# coa_courses3$Department_combined <- ifelse(coa_courses3$Department == "HE", "HS", coa_courses3$Department)
-
+```{r course distributions over terms Visualization}
 P1 <- ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(y = fct_rev(fct_relevel(Year_Term, c("18WI", "18SP",
         "18FA", "19WI", "19SP",
         "19FA", "20WI", "20SP",
@@ -415,32 +395,7 @@ ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department
 
 ```
 
-```{r initial animation}
-P2 <- ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(y = fct_rev(fct_relevel(Year_Term, c("18WI", "18SP",
-        "18FA", "19WI", "19SP",
-        "19FA", "20WI", "20SP",
-        "20FA", "21WI", "21SP",
-        "21FA", "22WI", "22SP",
-        "22FA", "23WI", "23SP"))))) +
-   scale_fill_brewer(palette = "RdBu") +
-  theme_dark() +
-  theme(legend.position = "bottom") 
-
-P2 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" ))), position = "fill") +
-    labs(
-    title = "Distribution of Courses by Department for Each Term",
-    x = "Course Proportion",
-    y = "Term",
-  fill = "Department") +
-  transition_states(Year_Term, transition_length = 3, state_length = 1,
-                    wrap = FALSE)+
-  ease_aes('linear') +
-  theme_minimal() +
-  view_follow()
-
-```
-
-```{r class size}
+```{r class size Visualization}
 coa_courses3$Class_Size <- as.numeric(gsub("[^0-9.]", "", coa_courses3$Class_Size))
 
 ggplot(coa_courses3 %>% filter(!Department %in% c('HE', 'SG', 'GS')), 
@@ -457,14 +412,7 @@ ggplot(coa_courses3 %>%
           labs(title = "Distribution of Class Size by Department", 
                x = "Department", y = "Class Size")
 
-
 ```
-
-
-```{r Degree requirements}
-
-```
-
 
 ## 1. Introduction
 
@@ -496,3 +444,28 @@ We will create a visualization showing course distribution in their respective r
 
 We might possibly extend or reorganize the current dataset in groupings that include the status of each instructor, visiting faculty, faculty, lecturer, teaching staff and so on. This information will be provided by Krystal, the Registrar, and Lothar, Academic Services Administrator. 
 
+## 5. Unfinished code to continue with.
+
+```{r initial animation}
+P2 <- ggplot(subset(coa_courses3, Department != "SG" & Department != "GS" & Department != "HE"), aes(y = fct_rev(fct_relevel(Year_Term, c("18WI", "18SP",
+        "18FA", "19WI", "19SP",
+        "19FA", "20WI", "20SP",
+        "20FA", "21WI", "21SP",
+        "21FA", "22WI", "22SP",
+        "22FA", "23WI", "23SP"))))) +
+   scale_fill_brewer(palette = "RdBu") +
+  theme_dark() +
+  theme(legend.position = "bottom") 
+
+P2 +  geom_bar(aes(fill = fct_relevel(Department, c("MD", "ED","AD", "ES", "HS" ))), position = "fill") +
+    labs(
+    title = "Distribution of Courses by Department for Each Term",
+    x = "Course Proportion",
+    y = "Term",
+  fill = "Department") +
+  transition_states(Year_Term, transition_length = 3, state_length = 1,
+                    wrap = FALSE)+
+  ease_aes('linear') +
+  theme_minimal() +
+  view_follow()
+```
