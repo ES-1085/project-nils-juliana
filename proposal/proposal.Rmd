@@ -443,5 +443,3 @@ Moreover, our team anticipates that the Academic Affairs Committee (AAC) and the
 We will create a visualization showing course distribution in their respective resource areas throughout the years/ terms. We will also create visualizations to show how many classes meet degree requirements per resource area. Additionally we will make note of how many professors are teaching classes that meet degree requirements per term. 
 
 We might possibly extend or reorganize the current dataset in groupings that include the status of each instructor, visiting faculty, faculty, lecturer, teaching staff and so on. This information will be provided by Krystal, the Registrar, and Lothar, Academic Services Administrator. 
-
-
